@@ -35,7 +35,6 @@ class Blockchain:
     def proof_of_work(self, previous_proof):
         new_proof = 1
         check_proof = False
-        
         while check_proof is False:
             # make a problem to solve 
             # dont add because it would be the same if you reverse the numbers
@@ -45,8 +44,7 @@ class Blockchain:
             if hash_operation[:4] == '0000' :
                 check_proof = True
             else:
-                new_proof += 1
-                
+                new_proof += 1             
         return new_proof
     
     def hash(self, block):
@@ -58,23 +56,69 @@ class Blockchain:
         block_index = 1
         while block_index < len(chain):
             block = chain[block_index]
+            #make sure the blocks 'previous_hash' matches the previous blocks hash
+            #this is what makes sure the chain is intack 
             if block['previous_hash'] != self.hash(previous_block):
                 return False
             previous_proof = previous_block['proof']
             proof = block['proof']
             hash_operation = hashlib.sha256(str(proof**2 - previous_proof**2).encode()).hexdigest()
+            # double check that the hash is valid 
             if hash_operation[:4] != '0000':
                 return False
+            #update the blocks that we are checking
             previous_block = block
             block_index += 1
         return True
     
     
+# Module 2 Mining the blockchain
+
+# Create the web app
+app = Flask(__name__)
+
+# Create the Blockchain
+blockchain = Blockchain()
+
+# Mine a new block
+@app.route('/mine_block', methods = ['GET'])
+def mine_block():
+    #first we need the previous block
+    previous_block = blockchain.get_previous_block()
+    #now we can get the preious proof
+    previous_proof = previous_block['proof']
+    #with this we can get the proof of work
+    proof = blockchain.proof_of_work(previous_proof)
+    #now we that we have the new proof we can start hashing
+    previous_hash = blockchain.hash(previous_block)
+    #with the new hash we can create a new block that now has the previous hash
+    new_block = blockchain.create_block(proof, previous_hash)
+    response = {'message': 'Mine is complete',
+                'index': new_block['index'],
+                'timestamp': new_block['timestamp'],
+                'proof': new_block['proof'],
+                'previous_hash': new_block['previous_hash']}
     
-    
-    
-    
-    
-    
-    
-# Mine the block
+    return jsonfiy(response), 200
+
+
+# Get the full chain
+@app.route('/get_full_chain', methods = ['GET'])
+def get_full_chain():
+    response = {'chain': blockchain.chain,
+                'length': len(blockchain.chain)}
+    return jsonify(response), 200
+
+
+
+
+
+
+
+
+
+
+
+
+
+
