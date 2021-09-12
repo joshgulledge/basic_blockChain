@@ -76,6 +76,7 @@ class Blockchain:
 
 # Create the web app
 app = Flask(__name__)
+app.config['JSONIFY_PRETTYPRINT_REGULAR'] = False
 
 # Create the Blockchain
 blockchain = Blockchain()
@@ -98,8 +99,7 @@ def mine_block():
                 'timestamp': new_block['timestamp'],
                 'proof': new_block['proof'],
                 'previous_hash': new_block['previous_hash']}
-    
-    return jsonfiy(response), 200
+    return jsonify(response), 200
 
 
 # Get the full chain
@@ -109,8 +109,8 @@ def get_full_chain():
                 'length': len(blockchain.chain)}
     return jsonify(response), 200
 
-
-
+# Run the App
+app.run(host = '0.0.0.0', port = 5000)
 
 
 
