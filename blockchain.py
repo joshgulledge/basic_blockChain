@@ -4,7 +4,10 @@
 import datetime
 import hashlib
 import json
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
+import requests
+from uuid import uuid4
+from urllib.parse import urlparse
 
 
 # build the chain
@@ -13,6 +16,9 @@ class Blockchain:
     # make the "chain" and the genesis block
     def __init__(self):
         self.chain = []
+        # make the empty list of transactions first! or the block wont have 
+        # access to them before it is created
+        self.transactions = []
         self.create_block(proof = 1, previous_hash = '0')
         
     # creates a new block and adds it to the chain
@@ -21,7 +27,10 @@ class Blockchain:
         block = { 'index' : len(self.chain) + 1,
                  'timestamp' : str(datetime.datetime.now()),
                  'proof' : proof,
-                 'previous_hash' : previous_hash }
+                 'previous_hash' : previous_hash,
+                 'transactins' : self.transactions }
+        # after transactions are added to block, make them empty again
+        self.transactions = []
         #adds the block to the end of the chain
         self.chain.append(block)
         #return the new block that was just added
@@ -71,6 +80,12 @@ class Blockchain:
             block_index += 1
         return True
     
+    def add_transaction (self, sender, reciever, amount):
+        self.transactions.append({'sender' : sender
+                                  'reciever' : reciever
+                                  'amount' : amount})
+        previous_block = self.get_previous_block()
+        return previous_block['index'] + 1
     
 # Module 2 Mining the blockchain
 
