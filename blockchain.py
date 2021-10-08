@@ -81,8 +81,8 @@ class Blockchain:
         return True
     
     def add_transaction (self, sender, reciever, amount):
-        self.transactions.append({'sender' : sender
-                                  'reciever' : reciever
+        self.transactions.append({'sender' : sender,
+                                  'reciever' : reciever,
                                   'amount' : amount})
         previous_block = self.get_previous_block()
         return previous_block['index'] + 1
