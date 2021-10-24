@@ -29,7 +29,7 @@ class Blockchain:
                  'timestamp' : str(datetime.datetime.now()),
                  'proof' : proof,
                  'previous_hash' : previous_hash,
-                 'transactins' : self.transactions }
+                 'transactions' : self.transactions }
         # after transactions are added to block, make them empty again
         self.transactions = []
         #adds the block to the end of the chain
@@ -186,7 +186,7 @@ def connect_node():
 # replace with most up to date chain
 @app.route('/replace_chain', methods = ['GET'])
 def replace_chain():
-    is_chain_raplaced = {'replace_chain_needed': blockchain.replace_chain()}
+    is_chain_raplaced = blockchain.replace_chain()
     if is_chain_raplaced:
         response = {'message': 'Chain was replaced with longest chain'}
     else:
