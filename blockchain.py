@@ -170,6 +170,29 @@ def add_transaction():
 
 # Decentralize the chain
 
+# connectint new nodes
+@app.route('/connect_node', methods = ['POST'])
+def connect_node():
+    json = request.get_json()
+    nodes = json.get('nodes')
+    if nodes is None:
+        return "No nodes", 400
+    for node in nodes:
+        blockchain.add_node(node)
+    response = {'message': 'Nodes are connected',
+                'total_nodes': list(blockchain.nodes)}
+    return jsonify(response), 201
+
+# replace with most up to date chain
+@app.route('/replace_chain', methods = ['GET'])
+def replace_chain():
+    is_chain_raplaced = {'replace_chain_needed': blockchain.replace_chain()}
+    if is_chain_raplaced:
+        response = {'message': 'Chain was replaced with longest chain'}
+    else:
+        response = {'message': 'Chain was the longest, it stayed the same'}
+    return jsonify(response), 200
+
 
 
 # Run the App
