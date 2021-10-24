@@ -115,6 +115,9 @@ class Blockchain:
 app = Flask(__name__)
 app.config['JSONIFY_PRETTYPRINT_REGULAR'] = False
 
+# Create addresses for the nodes
+node_address = str(uuid4()).replace('-', '')
+
 # Create the Blockchain
 blockchain = Blockchain()
 
@@ -129,13 +132,16 @@ def mine_block():
     proof = blockchain.proof_of_work(previous_proof)
     #now we that we have the new proof we can start hashing
     previous_hash = blockchain.hash(previous_block)
+    #include the transaction, give to the miner
+    blockchain.add_transaction(node_address, 'Person', 1)
     #with the new hash we can create a new block that now has the previous hash
     new_block = blockchain.create_block(proof, previous_hash)
     response = {'message': 'Mine is complete',
                 'index': new_block['index'],
                 'timestamp': new_block['timestamp'],
                 'proof': new_block['proof'],
-                'previous_hash': new_block['previous_hash']}
+                'previous_hash': new_block['previous_hash'],
+                'transactions': new_block['transactions']}
     return jsonify(response), 200
 
 
