@@ -29,7 +29,7 @@ class Blockchain:
                  'timestamp' : str(datetime.datetime.now()),
                  'proof' : proof,
                  'previous_hash' : previous_hash,
-                 'transactins' : self.transactions }
+                 'transactions' : self.transactions }
         # after transactions are added to block, make them empty again
         self.transactions = []
         #adds the block to the end of the chain
@@ -105,6 +105,8 @@ class Blockchain:
                     max_length = length
                     longest_chain = chain
         if longest_chain: #only has a value when we need to update chain
+            print("lonest chain was true")
+            print(longest_chain)
             self.chain = longest_chain
             return True
         return False
@@ -133,7 +135,7 @@ def mine_block():
     #now we that we have the new proof we can start hashing
     previous_hash = blockchain.hash(previous_block)
     #include the transaction, give to the miner
-    blockchain.add_transaction(node_address, 'Person', 1)
+    blockchain.add_transaction(node_address, 'Josh', 1)
     #with the new hash we can create a new block that now has the previous hash
     new_block = blockchain.create_block(proof, previous_hash)
     response = {'message': 'Mine is complete',
@@ -186,7 +188,7 @@ def connect_node():
 # replace with most up to date chain
 @app.route('/replace_chain', methods = ['GET'])
 def replace_chain():
-    is_chain_raplaced = {'replace_chain_needed': blockchain.replace_chain()}
+    is_chain_raplaced = blockchain.replace_chain()
     if is_chain_raplaced:
         response = {'message': 'Chain was replaced with longest chain'}
     else:
