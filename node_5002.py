@@ -105,8 +105,6 @@ class Blockchain:
                     max_length = length
                     longest_chain = chain
         if longest_chain: #only has a value when we need to update chain
-            print("lonest chain was true")
-            print(longest_chain)
             self.chain = longest_chain
             return True
         return False
@@ -135,7 +133,7 @@ def mine_block():
     #now we that we have the new proof we can start hashing
     previous_hash = blockchain.hash(previous_block)
     #include the transaction, give to the miner
-    blockchain.add_transaction(node_address, 'Josh', 1)
+    blockchain.add_transaction(node_address, 'Jacob', 1)
     #with the new hash we can create a new block that now has the previous hash
     new_block = blockchain.create_block(proof, previous_hash)
     response = {'message': 'Mine is complete',
@@ -198,7 +196,7 @@ def replace_chain():
 
 
 # Run the App
-app.run(host = '0.0.0.0', port = 5000)
+app.run(host = '0.0.0.0', port = 5002)
 
 
 
